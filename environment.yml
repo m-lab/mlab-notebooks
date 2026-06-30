@@ -1,8 +1,9 @@
 dependencies:
   - python: 3.14
   - jupyter 
+  - matplotlib>=3.7
+  - seaborn>=0.13
+  - ipywidgets>=8.0
+  - pip
   - pip: 
     - git+https://github.com/m-lab/iqb.git#subdirectory=library
-    - matplotlib>=3.7
-    - seaborn>=0.13
-    - ipywidgets>=8.0
