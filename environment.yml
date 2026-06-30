@@ -1,2 +1,7 @@
-environment:
+dependencies:
   - python: 3.14
+  - git+https://github.com/m-lab/iqb.git#subdirectory=library
+  - jupyter 
+  - matplotlib>=3.7
+  - seaborn>=0.13
+  - ipywidgets>=8.0
