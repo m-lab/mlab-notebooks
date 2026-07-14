@@ -15,7 +15,7 @@ All notebooks can be run in the browser without any local installation via [MyBi
 | [04-subdivision-asn-drilldown.ipynb](04-subdivision-asn-drilldown.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F04-subdivision-asn-drilldown.ipynb) | Provider performance within a region |
 | [05-cities.ipynb](05-cities.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F05-cities.ipynb) | City-level comparison (see geolocation caveats) |
 | [06-time-series.ipynb](06-time-series.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F06-time-series.ipynb) | Multi-month trend analysis |
-| [02-iqb-scores.ipynb](02-iqb-scores.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F02-iqb-scores.ipynb) | Computing Internet Quality Barometer scores |
+
 
 ## About the Data
 
