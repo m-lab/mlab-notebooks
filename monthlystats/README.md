@@ -48,17 +48,43 @@ geographic granularities:
 
 ## Setup
 
-Python 3.12+ with pandas, pyarrow, requests, matplotlib, seaborn, ipywidgets:
+The repository root has a `pyproject.toml` for [uv](https://docs.astral.sh/uv/),
+so the whole notebook stack installs in one command.
+
+**uv** (recommended — installs all notebook dependencies, then opens Jupyter):
 
 ```bash
-pip install -r requirements.txt
+# from the repository root or this directory
+uvx --from . jupyter notebook
 ```
 
-Or via conda:
+or, if you prefer the project's virtual environment (`.venv`):
 
 ```bash
-conda env create -f environment.yml
+uv run jupyter notebook
 ```
+
+Both install the same set: pandas, pyarrow, requests, matplotlib, seaborn,
+ipywidgets, and Jupyter. `uv run` reuses a `.venv` in the repo; `uvx --from .`
+builds a one-off environment — use whichever fits how you work.
+
+> **Why `--from .`?** Plain `uvx jupyter notebook` installs only Jupyter
+> itself. `--from .` tells uv to treat this directory as a project and pull in
+> that project's dependencies too — which is where the notebook libraries live.
+> (That is also what makes `uv run jupyter notebook` work.)
+
+Alternatives, if you do not use uv:
+
+```bash
+pip install -r requirements.txt && jupyter notebook
+```
+
+```bash
+conda env create -f environment.yml && conda activate mlab-notebooks && jupyter notebook
+```
+
+The `pyproject.toml`, `requirements.txt`, and `environment.yml` declare the
+same dependencies; update all three together when adding one.
 
 ## Tutorial design notes
 
