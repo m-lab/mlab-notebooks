@@ -1,18 +1,14 @@
-# M-Lab Monthly Stats notebook dependencies
+# M-Lab Monthly Stats workshop notebooks — dependencies
 #
 # Install with:
 #   pip install -r requirements.txt
 #
-# mlab-iqb brings pandas, pyarrow, and requests as transitive dependencies,
-# so you don't need to install those separately.
+# Notebooks use one loading pattern (manifest → URL → pd.read_parquet) and
+# interactive widgets + plotting.
 
-# IQB library — data access and score calculation
-git+https://github.com/m-lab/iqb.git#subdirectory=library
-
-# Visualization and notebook UI
+pandas>=2.0
+pyarrow>=14.0
+requests>=2.28
 matplotlib>=3.7
 seaborn>=0.13
 ipywidgets>=8.0
-
-# Optional: improves country name display (falls back to built-in list if absent)
-# pycountry

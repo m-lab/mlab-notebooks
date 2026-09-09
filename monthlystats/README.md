@@ -1,60 +1,100 @@
-# M-Lab Monthly Stats Notebooks
+# M-Lab Monthly Stats — tutorial notebooks
 
-Jupyter notebooks for exploring [M-Lab](https://www.measurementlab.net/) Monthly Stats. These notebooks are intended for researchers, network analysts, and community members who want to understand how internet quality varies across countries, ISPs, regions, and cities.
+A four-notebook tutorial on the [M-Lab](https://www.measurementlab.net/) Monthly Stats
+datasets. Designed for a ~2 hour session: from "what are these numbers" to
+"here is my country's story". Works for researchers, regulators, students, and
+anyone new to the data — no statistics background assumed.
 
-## Notebooks
+The whole tutorial can run in the browser via [MyBinder](https://mybinder.org/)
+— click a link to launch.
 
-All notebooks can be run in the browser without any local installation via [MyBinder](https://mybinder.org/). Click a link below to launch.
+| Notebook | Question it answers | Binder |
+|----------|--------------------|--------|
+| [00-introduction-and-catalog.ipynb](00-introduction-and-catalog.ipynb) | What are these data, and how do I load them? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F00-introduction-and-catalog.ipynb) |
+| [01-country-explorer.ipynb](01-country-explorer.ipynb) | How do I read one country's internet from its distribution shape? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F01-country-explorer.ipynb) |
+| [02-the-splits.ipynb](02-the-splits.ipynb) | Where does quality vary: between countries, regions, cities, or providers? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F02-the-splits.ipynb) |
+| [03-multiple-months.ipynb](03-multiple-months.ipynb) | Is my country getting better or worse over time? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F03-multiple-months.ipynb) |
 
-| Notebook | Binder | Description |
-|----------|--------|-------------|
-| [00-introduction-and-catalog.ipynb](00-introduction-and-catalog.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F00-introduction-and-catalog.ipynb) | Dataset structure, available slices and dates |
-| [01-country-level.ipynb](01-country-level.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F01-country-level.ipynb) | Compare countries, metric distributions |
-| [02-asn-isp.ipynb](02-asn-isp.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F02-asn-isp.ipynb) | Provider-level comparison within a country |
-| [03-subdivisions.ipynb](03-subdivisions.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F03-subdivisions.ipynb) | Sub-national breakdown by state/province |
-| [04-subdivision-asn-drilldown.ipynb](04-subdivision-asn-drilldown.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F04-subdivision-asn-drilldown.ipynb) | Provider performance within a region |
-| [05-cities.ipynb](05-cities.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F05-cities.ipynb) | City-level comparison (see geolocation caveats) |
-| [06-time-series.ipynb](06-time-series.ipynb) | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F06-time-series.ipynb) | Multi-month trend analysis |
+## How the notebooks load data
 
+One pattern, everywhere in this folder:
 
-## About the Data
+```
+manifest → pick month and slice → pd.read_parquet(url)
+```
 
-Monthly Stats are published at `https://measurementlab.net/data/iqb/` as monthly Parquet files. Each file covers one calendar month and one geographic granularity. The available slices are:
+The manifest lives at `https://measurementlab.net/data/stats/manifest.json` and
+lists every published file. Each notebook reads it, finds the URL for the
+month/slice it needs, and opens the Parquet directly. No local cache, no build
+step.
 
-| Slice | Geographic dimensions |
-|-------|-----------------------|
-| `downloads_by_country` | country |
-| `uploads_by_country` | country |
-| `downloads_by_country_asn` | country + ASN (ISP) |
-| `uploads_by_country_asn` | country + ASN |
-| `downloads_by_country_subdivision1` | country + state/province |
-| `uploads_by_country_subdivision1` | country + state/province |
-| `downloads_by_country_subdivision1_asn` | country + state/province + ASN |
-| `uploads_by_country_subdivision1_asn` | country + state/province + ASN |
-| `downloads_by_country_city` | country + city |
-| `uploads_by_country_city` | country + city |
-| `downloads_by_country_city_asn` | country + city + ASN |
-| `uploads_by_country_city_asn` | country + city + ASN |
+## About the data
 
-Download files include columns for `download_p{N}`, `latency_p{N}`, and `loss_p{N}`. Upload files include `upload_p{N}`. Percentile values N ∈ {1, 5, 10, 25, 50, 75, 90, 95, 99}.
+Monthly Stats aggregate NDT speed tests into monthly, percentile-based summaries
+(p1–p99) for four metrics — download, upload, latency, packet loss — at several
+geographic granularities:
 
-> **Latency and loss polarity:** In the parquet files, latency and packet loss percentiles are *inverted* so that p95 = best 5% (lowest latency/loss). This normalizes the "top 5% performance" slice to always be p95 regardless of metric.
+| Slice | One row per… |
+|-------|--------------|
+| `downloads_by_country` / `uploads_by_country` | country |
+| `downloads_by_country_subdivision1` / … | state / province |
+| `downloads_by_country_city` / … | city |
+| `downloads_by_country_asn` / … | provider (ASN) |
 
-## Further Reading
+> **Latency and loss polarity:** for latency and loss, lower is better, so the
+> percentiles are *inverted* in the Parquet files: `latency_p95` is the 5% of
+> connections with the *lowest* (best) latency. A higher percentile always means
+> a better connection, whatever the metric.
 
-**M-Lab Knowledge Base articles for this dataset:**
+## Setup
 
-- [M-Lab Monthly Stats: Pre-computed Parquet Summaries](https://kb.measurementlab.net/articles/monthly-stats-dataset) — what the dataset is, schema, slices, access, limitations
-- [Understanding Monthly Stats Percentiles](https://kb.measurementlab.net/articles/monthly-stats-percentiles) — polarity inversion for latency/loss, which percentile to use
-- [Working with Monthly Stats in Python](https://kb.measurementlab.net/articles/monthly-stats-python) — loading data, filtering, multi-month analysis, IQB score computation
+The repository root has a `pyproject.toml` for [uv](https://docs.astral.sh/uv/),
+so the whole notebook stack installs in one command.
 
-**IQB:**
+**uv** (recommended — installs all notebook dependencies, then opens Jupyter):
 
-- [IQB Library and source code](https://github.com/m-lab/iqb)
-- [IQB Framework Report (PDF)](https://www.measurementlab.net/publications/IQB_report_2025.pdf)
-- [IQB Executive Summary (PDF)](https://www.measurementlab.net/publications/IQB_executive_summary_2025.pdf)
+```bash
+# from the repository root or this directory
+uvx --from . jupyter notebook
+```
 
-**M-Lab:**
+or, if you prefer the project's virtual environment (`.venv`):
 
-- [M-Lab Knowledge Base](https://kb.measurementlab.net)
-- [M-Lab BigQuery Quickstart](https://www.measurementlab.net/data/docs/bq/quickstart/)
+```bash
+uv run jupyter notebook
+```
+
+Both install the same set: pandas, pyarrow, requests, matplotlib, seaborn,
+ipywidgets, and Jupyter. `uv run` reuses a `.venv` in the repo; `uvx --from .`
+builds a one-off environment — use whichever fits how you work.
+
+> **Why `--from .`?** Plain `uvx jupyter notebook` installs only Jupyter
+> itself. `--from .` tells uv to treat this directory as a project and pull in
+> that project's dependencies too — which is where the notebook libraries live.
+> (That is also what makes `uv run jupyter notebook` work.)
+
+Alternatives, if you do not use uv:
+
+```bash
+pip install -r requirements.txt && jupyter notebook
+```
+
+```bash
+conda env create -f environment.yml && conda activate mlab-notebooks && jupyter notebook
+```
+
+The `pyproject.toml`, `requirements.txt`, and `environment.yml` declare the
+same dependencies; update all three together when adding one.
+
+## Tutorial design notes
+
+The set is deliberately small (4 notebooks, no shared modules). Every notebook
+is self-contained; notebook 00 teaches the loading pattern the others reuse.
+Design rationales and change history live in
+[rewrite-plan.md](rewrite-plan.md).
+
+## Further reading
+
+- [M-Lab Knowledge Base](https://kb.measurementlab.net) — dataset docs and guides
+- [IQB publications](https://www.measurementlab.net/publications/IQB_report_2025.pdf) — the Internet Quality Barometer composite-score view
+- [M-Lab BigQuery Quickstart](https://www.measurementlab.net/data/docs/bq/quickstart/) — raw NDT data for deeper analysis
