@@ -1,11 +1,11 @@
-# M-Lab Monthly Stats — workshop notebooks
+# M-Lab Monthly Stats — tutorial notebooks
 
-A four-notebook workshop on the [M-Lab](https://www.measurementlab.net/) Monthly Stats
+A four-notebook tutorial on the [M-Lab](https://www.measurementlab.net/) Monthly Stats
 datasets. Designed for a ~2 hour session: from "what are these numbers" to
 "here is my country's story". Works for researchers, regulators, students, and
 anyone new to the data — no statistics background assumed.
 
-The whole workshop can run in the browser via [MyBinder](https://mybinder.org/)
+The whole tutorial can run in the browser via [MyBinder](https://mybinder.org/)
 — click a link to launch.
 
 | Notebook | Question it answers | Binder |
@@ -26,8 +26,7 @@ manifest → pick month and slice → pd.read_parquet(url)
 The manifest lives at `https://measurementlab.net/data/stats/manifest.json` and
 lists every published file. Each notebook reads it, finds the URL for the
 month/slice it needs, and opens the Parquet directly. No local cache, no build
-step — each file is ~1–5 MB, so a fresh download per run is fast and every
-notebook stays self-contained.
+step.
 
 ## About the data
 
@@ -61,7 +60,7 @@ Or via conda:
 conda env create -f environment.yml
 ```
 
-## Workshop design notes
+## Tutorial design notes
 
 The set is deliberately small (4 notebooks, no shared modules). Every notebook
 is self-contained; notebook 00 teaches the loading pattern the others reuse.

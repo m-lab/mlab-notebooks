@@ -5,7 +5,7 @@ Scope: simplify `monthlystats/` from **7 notebooks + 1 helper module** into **4 
 1. **The metrics** — download, upload, latency, loss — and what the **shape of the percentile distribution** tells you.
 2. **The splits** — country, country×ASN, country×subdivision, country×city — and **what you can (and cannot) learn from each**.
 
-Design intent: the four notebooks double as a **~2-hour workshop** that takes a participant from "what are these numbers" to "here is my country's story" — with developing-country and statistical-literacy constraints as first-class requirements, not afterthoughts (see §12).
+Design intent: the four notebooks double as a **~2-hour tutorial** that takes a participant from "what are these numbers" to "here is my country's story" — with developing-country and statistical-literacy constraints as first-class requirements, not afterthoughts (see §12).
 
 Out of scope, explicitly agreed: **no IQB score calculations** in these notebooks. Also agreed: **the tutorial never uses the IQB library's cache machinery** — multi-month analysis uses the same simple direct-download pattern as the rest of the set (see §8). IQB is mentioned only as a one-line pointer in notebook 00.
 
@@ -103,7 +103,7 @@ Goal: *"understand the dataset well enough to load it and ask a first question �
 2. **The four metrics** — keep the table, rename column "Better direction" → "Better connectivity" (values: ↑ Higher / ↓ Lower).
    - Add one plain-English line per metric: download = how fast pages/files arrive; upload = how fast you send; latency = responsiveness (gaming/video calls); loss = dropped packets (reliability).
    - Keep the polarity caveat block verbatim — it is the single most important concept in the dataset and notebook 01 will make it visible.
-3. **The percentile distribution** — new, short, and deliberately plain-statistics: *each cell is not one number but a distribution summarized at nine percentiles (p1, p5, p10, p25, p50, p75, p90, p95, p99). p50 is the median user — the middle of the pack; p95 is where the top 5% of connections sit. No mean exists in this dataset — percentiles only.* Then the framing line that matters: *a wide p50→p95 gap is not automatically "inequality" — it is a statement about the **shape** of the distribution. Connections are not spread evenly: most tests sit in a band, and a minority run much faster or much slower. Being lower in the distribution is just different from being upper in it, and how different depends on the shape — where the median sits, how long the tail stretches, how flat or steep the middle is. A big gap means the top stretches far past the typical user; why (fibre rollouts, a data-centre-heavy country, small samples) is a question the data alone do not answer.* Notebook 01 makes the same point visible on real curves. Also bake the intuition in here, jargon-free: *line up all the tests in a month from slowest to fastest — p50 is the person in the exact middle, p95 is 95 out of every 100, near the front. Before believing any of it, ask how many tests went in: 100 tests wiggle, 100 000 tests are solid.* Sample count may be the single most important idea in this workshop for small countries (see §12.4).
+3. **The percentile distribution** — new, short, and deliberately plain-statistics: *each cell is not one number but a distribution summarized at nine percentiles (p1, p5, p10, p25, p50, p75, p90, p95, p99). p50 is the median user — the middle of the pack; p95 is where the top 5% of connections sit. No mean exists in this dataset — percentiles only.* Then the framing line that matters: *a wide p50→p95 gap is not automatically "inequality" — it is a statement about the **shape** of the distribution. Connections are not spread evenly: most tests sit in a band, and a minority run much faster or much slower. Being lower in the distribution is just different from being upper in it, and how different depends on the shape — where the median sits, how long the tail stretches, how flat or steep the middle is. A big gap means the top stretches far past the typical user; why (fibre rollouts, a data-centre-heavy country, small samples) is a question the data alone do not answer.* Notebook 01 makes the same point visible on real curves. Also bake the intuition in here, jargon-free: *line up all the tests in a month from slowest to fastest — p50 is the person in the exact middle, p95 is 95 out of every 100, near the front. Before believing any of it, ask how many tests went in: 100 tests wiggle, 100 000 tests are solid.* Sample count may be the single most important idea in this Tutorial for small countries (see §12.4).
 4. **The splits** — keep the slice table, but rework the messaging around **what each split lets you learn**:
 
    | Split (slice prefix) | Adds dimension | What you can learn | Taught in |
@@ -275,7 +275,7 @@ The rewrite is organized around one principle: **give a user an ability in the f
 - 03: `Restart & Run All` produces a 4-panel trend chart for N months with no writes outside the notebook directory; re-running is clean because nothing persists.
 - Unused-import scan script passes (ast per code cell).
 - README links point at existing files; catalog link in 00 points at a 200 URL (`https://measurementlab.net/data`).
-- **Workshop dry-run** (§12.5): a non-statistician facilitator can run 00→03 in ≤2 h reading only the notebook text; every interactive chart in 01–03 carries a one-line plain-language caption ("reading it aloud").
+- **Tutorial dry-run** (§12.5): a non-statistician facilitator can run 00→03 in ≤2 h reading only the notebook text; every interactive chart in 01–03 carries a one-line plain-language caption ("reading it aloud").
 - **Low-sample honesty**: any country/month/geography whose sample count is small shows the caveat *in the chart caption*, not only in a warning box far above.
 
 ### Open items for the team
@@ -315,7 +315,7 @@ A full-history, all-slices merged file is therefore not a Big Data problem — i
 
 | # | Idea | What gets simpler | What it costs |
 |---|------|-------------------|---------------|
-| A | **Additive catalog-as-table** — publish the manifest's contents as a queryable `catalog.parquet` (one row per file: slice, start_date, end_date, url, sha256, num_rows, columns, published_at) at a stable URL, regenerated each month | Tutorial loader becomes a 2-line filter (`catalog.query("slice == … and start_date == …").url`); DuckDB can join the catalog to `read_parquet(url)` for ad-hoc multi-month queries; versioned by the existing `v` field | One more artifact to generate; catalog must stay schema-stable; does not reduce file count for trends |
+| A | **Additive catalog-as-table** — publish the manifest's contents as a queryable `catalog.parquet` (one row per file: slice, start_date, end_date, url, sha256, num_rows, columns, published_at) at a stable URL, regenerated each month | tutorial loader becomes a 2-line filter (`catalog.query("slice == … and start_date == …").url`); DuckDB can join the catalog to `read_parquet(url)` for ad-hoc multi-month queries; versioned by the existing `v` field | One more artifact to generate; catalog must stay schema-stable; does not reduce file count for trends |
 | B | **Merged history per slice** — one `history/downloads_by_country.parquet` etc., appended monthly (country: ~50k rows total; city family: a few MB) | Notebook 03 becomes one `pd.read_parquet(url)` + `WHERE month BETWEEN…`; "all history" queries become routine; cache-free tutorial stays cache-free | Pipeline must rebuild monthly (cheap here); storage roughly doubles for derived copies; files are no longer 1:1 with the cache layout consumers rely on; freshness lags one publish cycle; schema must be frozen (which is arguably a *good* forcing function) |
 | C | **Wide monthly bundle** — one file per month containing every split in a long format (a `level`/granularity column instead of separate slices) | The catalog quiz disappears; "which split do I want" becomes `WHERE level = 'city'`; one URL per month covers all examples | Files get wider and NULL-heavy (a country row has no `city`); mixed granularity invites users to compare rows that are not comparable; duplicates the existing 12-slice publishing pipeline for marginal teaching gain |
 | D | **Hive-partitioned family + DuckDB httpfs globs** — *do nothing*; the path layout is already a hive-ish scheme, and DuckDB's httpfs can fetch `read_parquet('https://…/cache/v1/*/*/downloads_by_country/data.parquet')` with remote globs | Zero new artifacts; ad-hoc cross-month queries in one statement | Every included file costs at least a footer/metadata fetch — across 210 months that is 210+ HTTP requests per query (mitigated by DuckDB's parallel fetch + metadata caching, but the partition dirs are *timestamp-string* named, not month-named, so globs are awkward); great for power users, wrong default for a Binder tutorial |
@@ -376,7 +376,7 @@ If the team wants the tutorial patterns to be *naturally* simple, the cheapest h
 
 ---
 
-## 12. Review pass: developing-country audience × statistical literacy × workshop intent
+## 12. Review pass: developing-country audience × statistical literacy × tutorial intent
 
 > Status: **binding guidelines** for the rewrite. This is the audience test of §§5–8: the person most likely to *need* these notebooks is a researcher, regulator, or student in a country with few M-Lab tests and no stats training. Everything here either upgrades how §§5–8 are written or is called out as already good.
 
@@ -416,11 +416,11 @@ Some participants have no stats background; several readers will translate the m
 - **Labelling**: all "Top N" titles become **"Highest N" / "Where X ranks"**. Ranking a country must read as *position*, not praise — the same chart that flatters one reader stigmatizes another when the numbers are noisy.
 - **Latency and loss matter more, proportionally, when bandwidth is scarce.** The polarity inversion therefore deserves the worked pair (12.2), not just a warning block.
 - **The ASN lens is the most-requested view for this audience** — regulators and journalists want provider information more than anything else. Our caution is about *public ranking/promotion from un-cleaned data*, which stays. The tutorial response is to teach the safe form: *one provider's numbers over time, with a high sample floor* — self-checking for a regulator's own use, not a leaderboard anyone publishes.
-- **Workshop logistics are part of the design**: a pre-rendered HTML/Colab copy of every notebook so participants who cannot run Jupyter can still follow along; the notebook text carries the lesson either way. The direct-download choice (§8) is load-bearing here — every artifact stays ~1–5 MB, so the workshop runs on one modest laptop over a shared connection.
+- **Tutorial logistics are part of the design**: a pre-rendered HTML/Colab copy of every notebook so participants who cannot run Jupyter can still follow along; the notebook text carries the lesson either way. The direct-download choice (§8) is load-bearing here — every artifact stays ~1–5 MB, so the tutorial runs on one modest laptop over a shared connection.
 
-### 12.4 Workshop intent — tighten and simplify around one session
+### 12.4 Tutorial intent — tighten and simplify around one session
 
-Reframe the four notebooks as ONE station-based workshop (~2 h):
+Reframe the four notebooks as ONE station-based tutorial (~2 h):
 
 | Time | Station | Participant leaves able to… |
 |------|---------|-----------------------------|
@@ -437,6 +437,6 @@ Simplify amendments locked in by this review:
 
 ### 12.5 Success measures for this review
 
-A participant with **no stats background** can, at the end of the workshop: (1) describe their country's curve in one plain sentence; (2) state whether its rank holds at p95; (3) name one region/city oddity in their own country; (4) say whether their country is trending up or down. A participant **with data skills** can point at exactly which cells to copy to redo the whole thing for a different country, slice, or month.
+A participant with **no stats background** can, at the end of the tutorial: (1) describe their country's curve in one plain sentence; (2) state whether its rank holds at p95; (3) name one region/city oddity in their own country; (4) say whether their country is trending up or down. A participant **with data skills** can point at exactly which cells to copy to redo the whole thing for a different country, slice, or month.
 
-Acceptance additions (already in §10): workshop dry-run by a non-statistician facilitator in ≤2 h with only the notebook text; caption presence low-sample honesty; "Highest N / Where X ranks" phrasing; plain-dictionary freeze in 00 with no new jargon anywhere after it.
+Acceptance additions (already in §10): tutorial dry-run by a non-statistician facilitator in ≤2 h with only the notebook text; caption presence low-sample honesty; "Highest N / Where X ranks" phrasing; plain-dictionary freeze in 00 with no new jargon anywhere after it.
