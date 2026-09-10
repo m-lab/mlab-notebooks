@@ -18,20 +18,20 @@ math: mathjax
 
 ## What gets measured, how to read it, and how **you** can explore it — today.
 
-A 5-minute walk-through before a hands-on session.
+A 5-minute walk-through of the dataset using Jupyter Notebooks
 
 Jonah Duckles · <jonah@measurementlab.net> · M-Lab
 
 ---
 
 <!-- _class: lead -->
-## The whole talk, in one number
+## Monthly Stats Data
 
 Every month, **millions of people** run an open speed test against
 [M-Lab](https://www.measurementlab.net/).
 
-We take **every** one of those tests and squeeze it into a **small, pre-computed
-file you can download in seconds**.
+We take **every** one of those tests and statistically summarize them in a **small, pre-computed
+file you can easily download**.
 
 The notebooks in this tutorial turn that file into answers about any country,
 region, city, or provider in the world.
@@ -40,7 +40,7 @@ region, city, or provider in the world.
 
 ## Where the data come from
 
-- **NDT** — the Network Diagnostic Tool — the open speed test platform M-Lab runs.
+- **NDT** — the Network Diagnostic Tool — the key tool in the open speed test which M-Lab runs.
 - **Millions** of tests every month, from real user devices worldwide.
 - **BigQuery** stores the raw rows; the full archive is **petabytes** of measurements.
 
@@ -52,11 +52,9 @@ The **Monthly Stats** dataset is M-Lab's curated, summarized view of all that:
 > Instead of querying petabytes of raw rows, each month you download one small
 > file with pre-computed percentile values — for each metric, geography, and month.
 
-**`manifest → pick month & slice → pd.read_parquet(url)`**
-
 ---
 
-## What's inside each file: the four metrics
+## What's inside each file
 
 | Metric | Column prefix | Unit | Better |
 |---|---|---|---|
@@ -65,10 +63,7 @@ The **Monthly Stats** dataset is M-Lab's curated, summarized view of all that:
 | Latency (min RTT) | `latency_p*` | ms | ↓ lower |
 | Packet loss rate | `loss_p*` | fraction | ↓ lower |
 
-- **download** — how fast pages and files arrive at your computer
-- **upload** — how fast you send data away from your computer
-- **latency** — round-trip responsiveness: how long a message takes to reach the server and be acknowledged at your computer
-- **loss** — percentage of dropped packets (reliability)
+_Where `p*` is the percentile one of `['p1', 'p5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p95', 'p99']` allowing you to explore the distribution and its skew_
 
 ---
 
@@ -77,17 +72,12 @@ The **Monthly Stats** dataset is M-Lab's curated, summarized view of all that:
 **Line all the tests in a month up, slowest → fastest:**
 
 - **p50** — the median, the test in the exact middle — the typical user's experience
-- **p95** — 95 tests out of every 100 — near the front
-- **p1** — near the very back
+- **p95** — the fastest connections (or lowest loss / latency)
+- **p1** — near the very back (slowest, highest loss / latency)
 
-No mean (average) exists here — only percentiles. One very fast connection cannot
-drag the summary upward the way it drags an average.
+This shows us the way the metric (throughput, latency, loss) varies across the tests.
 
-> **A wide p50→p95 gap shows how different experiences can be** in a region or country.
-> It is a statement about the *shape* of the distribution: most tests sit in a band,
-> and a minority run much faster or much slower.
-
-> **Before believing any of it — ask how many tests went in.** 100 tests wiggle; 100 000 are solid.
+> **A wide p50→p95 gap shows how different experiences can be** in the aggregation area (country, subdivision, city, ASN / ISP)
 
 ---
 
@@ -105,20 +95,6 @@ geography changes.
 
 ---
 
-## One polarity gotcha, then you know the whole schema
-
-For **latency and loss**, *lower* is better, so the data **flip the percentiles**:
-
-- `latency_p95` — the 5% of connections with the **lowest** (best) latency
-- `latency_p5` — the slowest (worst) latency
-
-A higher percentile always means a **better** connection, whatever the metric.
-
-Notebook 01 makes this visible on real curves — the latency curve slopes the
-*other* way.
-
----
-
 <!-- _class: lead -->
 ## What the numbers look like — June 2026, country medians
 
@@ -128,11 +104,11 @@ Notebook 01 makes this visible on real curves — the latency curve slopes the
 
 **Download p50, Mbit/s** (240 countries on file)
 
-| 🇺🇸 US | 🇧🇷 BR | 🇩🇽 MX | 🇰🇪 KE |
+| 🇺🇸 US | 🇧🇷 BR | 🇲🇽 MX | 🇰🇪 KE |
 |---|---|---|---|
-| **125.9** | 16.9 | 15.3 | 9.4 |
+| **131** | 74 | 35 | 11 |
 
-<!-- (illustrative) -->
+<!-- June 2026 medians; see the percentile-curve plot on the next slide -->
 
 </div>
 
@@ -149,8 +125,18 @@ Notebook 01 makes this visible on real curves — the latency curve slopes the
 
 </div>
 
-> We use **"Highest N"**, not "Top N": a position on a scale, not a prize. Sample
-> counts are shown on every chart — check the test count before believing a rank.
+---
+
+<!-- _class: lead -->
+## The shape behind the medians — percentile curves
+
+![width:700 center](plot-p1p99.png)
+
+Each line is one country's **full distribution** (p1 → p99), June 2026. The
+**median** is just the middle point — the **curve is the story**: where it sits
+low and flat, that is where most users actually are; a stretch at the top is a
+minority running far faster. Notebook 01 draws these curves for any country,
+any metric, any month.
 
 ---
 
@@ -158,13 +144,12 @@ Notebook 01 makes this visible on real curves — the latency curve slopes the
 
 | | Question it answers |
 |---|---|
-| **00 · introduction & catalog** | What are these data? |
+| **00 · introduction & catalog** | What are these data, and how to load them? |
 | **01 · country explorer** | How do I read a country's distribution shape? |
 | **02 · the splits** | Where does it vary: countries, regions, cities, providers? |
 | **03 · multiple months** | How do measurements change over months? |
 
-Each is **self-contained** — start anywhere. 00 teaches the one loading pattern
-the others reuse: **`manifest → URL → pd.read_parquet`**.
+Each is **self-contained** 
 
 ---
 
@@ -181,43 +166,11 @@ Click a notebook — it launches in your browser in seconds. No local install.
 
 **Your country.** Look up your own — median, shape, regions, and whether it improves.
 
----
-
-## What to try first, in the hands-on session
-
-1. **00** — open the catalog, pick your country and month.
-2. **01** — read your country's curve aloud; run the **percentile sweep**.
-3. **02** — your regions vs your cities vs your providers; "between or within".
-4. **03** — pull 12 months: is your country trending **up or down**?
-
-The whole point: **you can redo every chart yourself** — same cells, your country,
-your slice, your question. No raw BigQuery needed.
-
----
-
-## A realistic path through the notebooks
-
-```python
-# the ONLY pattern you need to remember
-manifest → pick month and slice → pd.read_parquet(url)
-```
-
-Notebook 00 shows the few lines behind this; 01–03 reuse it verbatim.
-
-**Questions you can now answer overnight:**
-
-- What is the typical download speed in my country vs Brazil vs Germany?
-- Does my city punch above or below my country's median?
-- Is the gap between the top 5% and the median growing?
-- Is my country's median improving month over month?
-
----
-
 <!-- _class: lead -->
 ## Recap
 
-- **Percentiles, not averages** — and the shape of the distribution is the story.
-- **Four metrics** × **the same slices** — country, region, city, provider.
+- **Percentiles, not averages** — and the shape of the distribution can be used to ask many questions of the data.
+- **Four metrics** × **the same slices** — country, region, city, Internet provider (ASN).
 - **One loading pattern**, four notebooks, zero installs: launch any in MyBinder.
 
-**Thanks! Questions? Hands-on time — open a notebook and make it about your country.**
+**Thanks! Questions? Hands-on time — open a notebook and explore!**
