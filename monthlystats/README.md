@@ -8,6 +8,9 @@ anyone new to the data — no statistics background assumed.
 The whole tutorial can run in the browser via [MyBinder](https://mybinder.org/)
 — click a link to launch.
 
+Presenting? [talk-slides.md](talk-slides.md) is a Marp slideshow (~5–10 min
+overview) you can present before the hands-on session.
+
 | Notebook | Question it answers | Binder |
 |----------|--------------------|--------|
 | [00-introduction-and-catalog.ipynb](00-introduction-and-catalog.ipynb) | What are these data, and how do I load them? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F00-introduction-and-catalog.ipynb) |
