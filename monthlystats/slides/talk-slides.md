@@ -106,7 +106,7 @@ geography changes.
 
 | 🇺🇸 US | 🇧🇷 BR | 🇲🇽 MX | 🇰🇪 KE |
 |---|---|---|---|
-| **131** | 74 | 35 | 11 |
+| **126** | 75 | 35 | 11 |
 
 <!-- June 2026 medians; see the percentile-curve plot on the next slide -->
 
@@ -130,13 +130,25 @@ geography changes.
 <!-- _class: lead -->
 ## The shape behind the medians — percentile curves
 
+<div class="cols">
+
+<div>
+
 ![width:700 center](plot-p1p99.png)
+
+</div>
+
+<div>
 
 Each line is one country's **full distribution** (p1 → p99), June 2026. The
 **median** is just the middle point — the **curve is the story**: where it sits
 low and flat, that is where most users actually are; a stretch at the top is a
 minority running far faster. Notebook 01 draws these curves for any country,
 any metric, any month.
+
+</div>
+
+<div>
 
 ---
 
@@ -165,6 +177,8 @@ Click a notebook — it launches in your browser in seconds. No local install.
 | 03 · multiple months | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F03-multiple-months.ipynb) |
 
 **Your country.** Look up your own — median, shape, regions, and whether it improves.
+
+---
 
 <!-- _class: lead -->
 ## Recap
