@@ -1,15 +1,13 @@
 # M-Lab Monthly Stats — tutorial notebooks
 
 A four-notebook tutorial on the [M-Lab](https://www.measurementlab.net/) Monthly Stats
-datasets. Designed for a ~2 hour session: from "what are these numbers" to
-"here is my country's story". Works for researchers, regulators, students, and
-anyone new to the data — no statistics background assumed.
+datasets. Designed for an interactive session: from "what are these numbers" to
+"here is my country's story". 
 
 The whole tutorial can run in the browser via [MyBinder](https://mybinder.org/)
-— click a link to launch.
+— click a link in the table below to launch each notebook.
 
-Presenting? [talk-slides.md](talk-slides.md) is a Marp slideshow (~5–10 min
-overview) you can present before the hands-on session.
+[Overview Slides](slides/index.pdf) is a slideshow (~5–10 min overview) of the data used in these notebooks
 
 | Notebook | Question it answers | Binder |
 |----------|--------------------|--------|
@@ -19,12 +17,6 @@ overview) you can present before the hands-on session.
 | [03-multiple-months.ipynb](03-multiple-months.ipynb) | Is my country getting better or worse over time? | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/m-lab/mlab-notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2Fmonthlystats%2F03-multiple-months.ipynb) |
 
 ## How the notebooks load data
-
-One pattern, everywhere in this folder:
-
-```
-manifest → pick month and slice → pd.read_parquet(url)
-```
 
 The manifest lives at `https://measurementlab.net/data/stats/manifest.json` and
 lists every published file. Each notebook reads it, finds the URL for the
